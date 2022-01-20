@@ -13,4 +13,4 @@ login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
-from project import models, routes, camera
+from project import models, routes
