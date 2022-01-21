@@ -1,17 +1,19 @@
-from flask import render_template, request, flash, url_for
+from flask import render_template, request, flash, url_for,session
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
 
+from oauth_deco import login_is_required
 from project import app, db
 from .models import User
-
+from project import oauth
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',session=session)
 
-@app.route('/register', methods=['POST','GET'])
+
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == "POST":
         email = request.form['email']
@@ -22,7 +24,7 @@ def register():
             flash('Вже зареєстровано користувача з такою адресою')
             return redirect(url_for('register'))
 
-        newUser = User(email=email,password=generate_password_hash(password,method='sha256'))
+        newUser = User(email=email, password=generate_password_hash(password, method='sha256'))
         try:
             db.session.add(newUser)
             db.session.commit()
@@ -33,7 +35,8 @@ def register():
     else:
         return render_template('register.html')
 
-@app.route('/login', methods=['GET','POST'])
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template("login.html")
@@ -51,6 +54,7 @@ def login():
         login_user(user, remember=remember)
         return redirect(url_for('room'))
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -60,7 +64,18 @@ def logout():
 
 
 @app.route('/room')
-@login_required
 def room():
+    if session.permanent:
+        return redirect(url_for('room1'))
+    else:
+        return redirect(url_for('room2'))
+
+@app.route('/meeting-room')
+@login_is_required
+def room1():
     return render_template('room.html')
 
+@app.route('/conference-room')
+@login_required
+def room2():
+    return render_template('room.html')
