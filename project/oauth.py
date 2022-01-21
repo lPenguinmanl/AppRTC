@@ -2,7 +2,7 @@ from authlib.integrations.flask_client import OAuth
 from flask import redirect, url_for, session, request
 
 # decorator for routes that should be accessible only by logged in users
-from oauth_deco import login_is_required
+from project.oauth_deco import login_is_required
 from project import app
 
 # oAuth Setup
@@ -35,7 +35,7 @@ def glogin():
     return google.authorize_redirect(redirect_uri)
 
 
-@app.route('/callback')
+@app.route('/gcallback')
 def authorize():
     google = oauth.create_client('google')  # create the google oauth client
     token = google.authorize_access_token()  # Access token from google (needed to get user info)

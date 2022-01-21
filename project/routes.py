@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
 
-from oauth_deco import login_is_required
+from project.oauth_deco import login_is_required
 from project import app, db
 from .models import User
 from project import oauth
@@ -56,7 +56,7 @@ def login():
 
 
 @app.route('/logout')
-@login_required
+@login_is_required
 def logout():
     logout_user()
     flash("Successfully loged out")
@@ -75,7 +75,7 @@ def room():
 def room1():
     return render_template('room.html')
 
-@app.route('/conference-room')
-@login_required
-def room2():
-    return render_template('room.html')
+#@app.route('/conference-room')
+#@login_is_required
+#def room2():
+#    return render_template('room.html')
